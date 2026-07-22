@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog</title>
+<meta name="description" content="A first look at how PiedCrow Labs approaches land suitability using terrain data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0A0F0D;
+  --surface:#111A16;
+  --surface-2:#16211C;
+  --line:#223129;
+  --line-soft:#1A2621;
+  --ink:#EAF0EC;
+  --ink-dim:#93A69B;
+  --ink-faint:#5C6E64;
+  --glacier:#7FB8C8;
+  --moss:#5C8A6E;
+  --ochre:#D9A441;
+  --radius:14px;
+  --disp:'Space Grotesk',sans-serif;
+  --body:'Inter',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none;}
+img,svg{display:block;max-width:100%;}
+h1,h2,h3{font-family:var(--disp);font-weight:600;letter-spacing:-0.01em;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+
+/* ===== NAV (matches index.html) ===== */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:rgba(10,15,13,0.72);
+  border-bottom:1px solid var(--line-soft);
+}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;max-width:1180px;margin:0 auto;}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:600;font-size:17px;}
+.logo-mark{width:22px;height:22px;}
+.nav-links{display:flex;gap:34px;font-size:14px;color:var(--ink-dim);}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a.active{color:var(--ink);}
+@media (max-width:820px){
+  .nav-links{display:none;}
+}
+
+/* ===== ARTICLE ===== */
+.article{
+  max-width:720px;
+  margin:0 auto;
+  padding:160px 32px 120px;
+  text-align:center;
+}
+.back-link{
+  font-family:var(--mono);
+  font-size:13px;
+  color:var(--ink-dim);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:40px;
+  transition:color .2s ease;
+}
+.back-link:hover{color:var(--glacier);}
+.meta{
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-bottom:20px;
+}
+.article h1{
+  font-size:clamp(32px,5vw,48px);
+  line-height:1.15;
+  margin-bottom:20px;
+}
+.article .dek{
+  color:var(--ink-dim);
+  font-size:18px;
+  line-height:1.6;
+  max-width:560px;
+  margin:0 auto 40px;
+}
+.byline{
+  border-top:1px solid var(--line-soft);
+  border-bottom:1px solid var(--line-soft);
+  padding:24px 0;
+  margin-bottom:56px;
+}
+.byline .name{font-family:var(--disp);font-weight:600;font-size:15px;}
+.byline .org, .byline .email{color:var(--ink-faint);font-size:13px;margin-top:4px;}
+.prose{text-align:left;max-width:640px;margin:0 auto;}
+.prose p{color:var(--ink-dim);font-size:16.5px;line-height:1.75;}
+.prose p + p{margin-top:20px;}
+.prose em{color:var(--ink);font-style:italic;}
+
+/* ===== SUBTITLE / SECTION LABEL ===== */
+.subtitle{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  font-family:var(--mono);
+  font-size:12px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin:48px 0 24px;
+}
+.subtitle::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:var(--line);
+}
+
+/* ===== FOOTER (matches index.html) ===== */
+footer{border-top:1px solid var(--line-soft);padding:60px 0 32px;}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:32px;}
+@media (max-width:700px){.foot-grid{grid-template-columns:1fr;}}
+.foot-grid h4{font-family:var(--mono);font-size:12px;color:var(--ink-faint);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px;}
+.foot-grid a{display:block;font-size:14px;color:var(--ink-dim);padding:6px 0;}
+.foot-grid a:hover{color:var(--ink);}
+.foot-brand .logo{margin-bottom:14px;}
+.foot-brand p{color:var(--ink-faint);font-size:13px;max-width:260px;}
+.foot-bottom{margin-top:48px;padding-top:24px;border-top:1px solid var(--line-soft);display:flex;justify-content:space-between;color:var(--ink-faint);font-size:12px;font-family:var(--mono);flex-wrap:wrap;gap:10px;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="index.html" class="logo">
+      <svg class="logo-mark" viewBox="0 0 24 24" fill="none"><path d="M2 16c3-6 6-9 10-9s7 3 10 9" stroke="#D9A441" stroke-width="1.6" stroke-linecap="round"/><path d="M2 20c3-5 6-7 10-7s7 2 10 7" stroke="#7FB8C8" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/></svg>
+      PiedCrow Labs
+    </a>
+    <div class="nav-links">
+      <a href="index.html#vision">Vision</a>
+      <a href="index.html#products">Products</a>
+      <a href="index.html#notes">Field Notes</a>
+      <a href="blog.html" class="active">Blog</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<article class="article">
+  <a href="index.html#notes" class="back-link">← Back to Blog</a>
+
+  <div class="meta">July 20th, 2026 / 8 min read</div>
+
+  <h1>Before We Build, We Should Understand</h1>
+  <p class="dek">A first look at how we're approaching land suitability — and why the shape of the ground is often the first question, not the last.</p>
+
+  <div class="byline">
+    <div class="name">PiedCrow Labs Team</div>
+    <div class="org">PiedCrow Labs</div>
+  </div>
+
+  <div class="prose"> 
+    <div class="subtitle">01 — The gap in most site evaluations</div>
+    <p>Every building begins with a plan. Architects produce drawings, Engineers calculate loads,Surveyors define boundaries, and
+        Financial analysts estimate costs.Yet one of the most important questions is often left unanswered: 
+        Can this landscape actually support what we're about to build? Across the world, development decisions are made every day with 
+        remarkable precision about structures, budgets, and timelines—but surprisingly little understanding of the land itself.
+        Roads are built across natural drainage corridors. Homes are constructed in flood-prone areas. Farms expand onto soils that degrade rapidly.
+        Vegetation that once stabilized the landscape disappears without anyone realizing the consequences until years later.
+        The result isn't simply environmental damage. 
+        It's higher infrastructure costs, greater disaster risk, declining agricultural productivity, and communities that become less resilient with every decision.
+    
+       The problem isn't that we lack information. In fact, we have more environmental data than ever before. Satellites image every corner of Earth. Digital elevation models describe the shape of landscapes.
+        Climate datasets reveal long-term rainfall patterns. Soil databases map the characteristics beneath our feet. Land cover products show how ecosystems are changing.
+        But these datasets live in different places, different formats, and require specialized expertise to interpret. Most people making land decisions never see them.
+        And even when they do, they don't answer the question that actually matters: 
+        "What can this land sustainably support?"</p>
+  <div <div class="prose">
+    <div class="subtitle">02 -We Don't Need More Maps</div>
+    
+    <p>Maps have never been the problem.There are already thousands of them, Flood maps, Soil maps Vegetation maps, Rainfall maps & Topographic maps.
+        Each tells a small part of the story. But decisions aren't made from individual datasets. They're made by combining them, Imagine standing on a parcel of land and Instead of opening 
+        six different GIS layers, downloading datasets, and interpreting satellite imagery, what if you simply clicked that location and immediately understood:
+        Is the terrain suitable for development?
+        How vulnerable is this site to flooding?
+        What kind of soil exists here?
+        What vegetation currently protects the landscape?
+        How much rainfall does it receive?
+        Is it suitable for solar energy?
+        How accessible is surrounding infrastructure?
+        Not as raw data but as practical guidance.
+    </p>
+
+   <div <div class="prose">
+    <div class="subtitle">03 - Site Intelligence: A New Approach</div>
+    
+    <p>This idea became our first product: Site Intelligence.
+        Site Intelligence evaluates the environmental characteristics of any location before development begins. Click anywhere on the map, and within seconds it analyzes:
+        Terrain
+        Flood risk
+        Soil properties
+        Land cover
+        Rainfall and temperature
+        Solar potential
+        Site context
+        
+        Instead of asking users to interpret environmental datasets, Site Intelligence transforms them into insights that help answer a much bigger question:
+        What does this landscape naturally support? Whether someone is planning a home, evaluating farmland, selecting a renewable energy site, or exploring 
+        investment opportunities, understanding environmental conditions early leads to better decisions later.</p> 
+   <div <div class="prose">
+    <div class="subtitle">04 - Why This Matters</div>
+   
+    <p>Climate resilience isn't determined by national policies alone, it's determined one parcel at a time. Every driveway changes how water flows.
+        Every building alters drainage. Every cleared forest changes local ecosystems. Every farm influences soil health. Small decisions accumulate into regional outcomes.
+        If we want more resilient communities, we need better decisions at the smallest scale.
+        That begins with environmental understanding.
+    </p>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="index.html" class="logo">
+          <svg class="logo-mark" viewBox="0 0 24 24" fill="none"><path d="M2 16c3-6 6-9 10-9s7 3 10 9" stroke="#D9A441" stroke-width="1.6" stroke-linecap="round"/></svg>
+          PiedCrow Labs
+        </a>
+        <p>Nature-based solutions, grounded in data.</p>
+      </div>
+      <div>
+        <h4>Site</h4>
+        <a href="index.html#vision">Vision</a>
+        <a href="index.html#products">Products</a>
+        <a href="index.html#notes">Field Notes</a>
+        <a href="blog.html">Blog</a>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <a href="mailto:sakindeborah@outlook.com">sakindeborah@outlook.com</a>
+        <a href="https://www.linkedin.com/in/sakin-deborah/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 PiedCrow Labs</span>
+      <span>Nairobi, Kenya</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
